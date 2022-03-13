@@ -1,0 +1,21 @@
+version: "3"
+services:
+  nginx:
+    ports:
+      - "80:80"
+  gateway:
+    build:
+      context: ./gateway
+      args:
+        NODE_ENV: production
+    env_file:
+      - ./gateway/.env
+    command: node index.js
+  account-bck:
+    build:
+      context: ./account
+      args:
+        NODE_ENV: production
+    env_file:
+      - ./account/.env
+    command: node index.js

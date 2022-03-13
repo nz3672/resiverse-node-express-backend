@@ -1,0 +1,24 @@
+{
+  "name": "gateway",
+  "proxy": {
+    "target": "http://localhost:8002"
+  },
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "http-proxy-middleware": "^2.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon -L index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

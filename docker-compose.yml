@@ -1,0 +1,43 @@
+version: "3"
+services:
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - gateway
+      - account-bck
+    networks:
+      - nginx_network
+
+  gateway:
+    build: ./gateway
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./gateway:/app
+      - /app/node_modules
+    env_file:
+      - ./gateway/.env
+    depends_on:
+      - account-bck
+    networks:
+      - nginx_network
+
+  account-bck:
+    build: ./account
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./account:/app
+      - /app/node_modules
+    env_file:
+      - ./account/.env
+    networks:
+      - nginx_network
+
+networks:
+  nginx_network:
+    external: true
