@@ -2,14 +2,6 @@ const asyncHandler = require("express-async-handler");
 const Building = require("../models/buildingModel");
 const { upImgToS3, upload } = require("../controllers/imgController");
 const User = require("../models/userModel");
-// @desc Get Building
-// @router GET /api/buildings
-// @access Private
-const getBuilding = asyncHandler(async (req, res) => {
-  const buildings = await Building.find();
-
-  res.status(200).json(buildings);
-});
 
 // @desc Get Building
 // @router GET /api/buildings/all
@@ -159,7 +151,6 @@ const getBuildingByID = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-  getBuilding,
   setBuilding,
   updateBuilding,
   deleteBuilding,
