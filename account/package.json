@@ -10,6 +10,7 @@
   "author": "Sarunya S. and Ananyaluck C.",
   "license": "MIT",
   "dependencies": {
+    "aws-sdk": "^2.1096.0",
     "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
     "connect-redis": "^6.1.1",
@@ -20,6 +21,8 @@
     "express-session": "^1.17.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.2",
+    "multer": "^1.4.4",
+    "multer-s3": "^2.10.0",
     "redis": "^4.0.4"
   },
   "devDependencies": {

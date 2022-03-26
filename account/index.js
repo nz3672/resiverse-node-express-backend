@@ -10,11 +10,25 @@ const port = process.env.PORT || 8001;
 connectDB();
 
 const app = express();
+// app.use(function (req, res, next) {
+//   // res.setHeader("Access-Control-Allow-Origin", "*");
+//   // res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+//   // res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+//   // res.setHeader("Access-Control-Allow-Credentials", true);
+//   next();
+// });
+app.use(
+  cors({
+    //     // origin: "*",
+    //     // credentials: true, //access-control-allow-credentials:true
+    //     // optionSuccessStatus: 200,
+  })
+);
+app.options("/api/buildings", cors());
 
 // handle middleware for get json body
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors({}));
 
 app.get("/", (req, res) => {
   res.send("<h1>Hedllo Tao</h1>");
