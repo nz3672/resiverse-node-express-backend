@@ -2,13 +2,14 @@ const express = require("express");
 const router = express.Router();
 const {
   getTransList,
+  getMyTransList,
   setTransList,
   updateTransList,
   deleteTransList,
 } = require("../controllers/transListController");
 const { protect } = require("../middleware/authMiddleware");
 
-router.route("/").get(getTransList).post(protect, setTransList);
+router.route("/").get(protect, getMyTransList).post(protect, setTransList);
 router
   .route("/:id")
   .put(protect, updateTransList)

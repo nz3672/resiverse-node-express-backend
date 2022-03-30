@@ -5,9 +5,14 @@ const TransList = require("../models/transListModel");
 // @desc Get TransList
 // @router GET /api/translists
 // @access Private
-const getTransList = asyncHandler(async (req, res) => {
-  const transLists = await TransList.find();
-
+const getMyTransList = asyncHandler(async (req, res) => {
+  const transLists = await TransList.find({
+    $or: [{ u_id1: req.user.id }, { u_id2: req.user.id }],
+  });
+  if (!transLists) {
+    res.status(400);
+    throw new Error("No translist in this user.");
+  }
   res.status(200).json(transLists);
 });
 
@@ -20,6 +25,8 @@ const setTransList = asyncHandler(async (req, res) => {
     tr_contract: req.body.tr_contract,
     tr_start_date: req.body.tr_start_date,
     tr_cancel_date: req.body.tr_cancel_date,
+    u_id1: req.body.u_id1,
+    u_id2: req.body.u_id2,
     bd_id: req.body.bd_id,
   });
 
@@ -66,6 +73,7 @@ const deleteTransList = asyncHandler(async (req, res) => {
 
 module.exports = {
   getTransList,
+  getMyTransList,
   setTransList,
   updateTransList,
   deleteTransList,
