@@ -6,16 +6,19 @@ const {
   deleteBuilding,
   getBuildingByID,
   getAllBuilding,
+  getMyBuilding,
 } = require("../controllers/buildingController");
 const { protect } = require("../middleware/authMiddleware");
 
 router
   .route("/:id")
   .put(protect, updateBuilding)
-  .delete(protect, deleteBuilding)
-  .get(protect, getBuildingByID);
+  .delete(protect, deleteBuilding);
+
 router.route("/post").post(protect, setBuilding);
 router.route("/").get(getAllBuilding);
+router.route("/me").get(protect, getMyBuilding);
+
 // router.get("/", getBuilding);
 
 // router.post("/", setBuilding);

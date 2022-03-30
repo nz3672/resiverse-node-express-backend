@@ -17,23 +17,12 @@ const app = express();
 //   // res.setHeader("Access-Control-Allow-Credentials", true);
 //   next();
 // });
-app.use(
-  cors({
-    //     // origin: "*",
-    //     // credentials: true, //access-control-allow-credentials:true
-    //     // optionSuccessStatus: 200,
-  })
-);
-app.options("/api/buildings", cors());
+app.use(cors({}));
+// app.options("/api/buildings", cors());
 
 // handle middleware for get json body
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-app.get("/", (req, res) => {
-  res.send("<h1>Hedllo Tao</h1>");
-  console.log("Hedllo Tao");
-});
 
 app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/buildings", require("./routes/buildingRoutes"));

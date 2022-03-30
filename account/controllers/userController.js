@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
+const { use } = require("../routes/buildingRoutes");
 
 // @desc Get User
 // @router GET /api/users
@@ -14,26 +15,10 @@ const getUser = asyncHandler(async (req, res) => {
 // @router GET /api/users/me
 // @access Private
 const getMe = asyncHandler(async (req, res) => {
-  const { _id, u_username, u_email } = await User.findById(req.user.id);
+  const response = await User.findById(req.user.id);
 
-  res.status(200).json({
-    id: _id,
-    u_username,
-    u_email,
-  });
+  res.status(200).json(response);
 });
-
-// @desc Set User
-// @router POST /api/users
-// @access Private
-// const setUser = asyncHandler(async (req, res) => {
-//   if (!req.body.text) {
-//     res.status(400);
-//     throw new Error("Please add a text field");
-//   }
-
-//   res.status(200).json({ message: "Set User" });
-// });
 
 // @desc Register User
 // @router POST /api/users
@@ -103,7 +88,7 @@ const loginUser = asyncHandler(async (req, res) => {
   if (user && (await bcrypt.compare(u_password, user.u_password))) {
     res.json({
       _id: user.id,
-      u_username: user.u_username,
+      user: user,
       token: generateToken(user._id),
     });
   } else {
@@ -116,7 +101,19 @@ const loginUser = asyncHandler(async (req, res) => {
 // @router PUT /api/users
 // @access Private
 const updateUser = asyncHandler(async (req, res) => {
-  res.status(200).json({ message: `Update user ${req.params.id}` });
+  const condition = { _id: req.params.id };
+  const update = req.body;
+  const { u_password } = req.body;
+
+  if (u_password !== undefined) {
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(u_password, salt);
+    update.u_password = hashedPassword;
+  }
+
+  const user = await User.findOneAndUpdate(condition, update, { new: true });
+  res.status(200).json(user);
 });
 
 // @desc Delete User

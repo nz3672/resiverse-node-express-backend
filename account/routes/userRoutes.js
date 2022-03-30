@@ -14,7 +14,7 @@ router.route("/").get(getUser);
 router.route("/register").post(registerUser);
 router.route("/login").post(loginUser);
 
-router.route("/:id").put(updateUser).delete(deleteUser);
+router.route("/:id").put(protect, updateUser).delete(deleteUser);
 router.get("/me", protect, getMe);
 
 // router.get("/", getUser);

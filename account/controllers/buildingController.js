@@ -1,10 +1,10 @@
 const asyncHandler = require("express-async-handler");
 const Building = require("../models/buildingModel");
-const { upImgToS3, upload } = require("../controllers/imgController");
+const { upload } = require("../controllers/imgController");
 const User = require("../models/userModel");
 
 // @desc Get Building
-// @router GET /api/buildings/all
+// @router GET /api/buildings
 // @access public
 const getAllBuilding = asyncHandler(async (req, res) => {
   const buildings = await Building.find();
@@ -63,42 +63,6 @@ const setBuilding = asyncHandler(async (req, res) => {
       throw new Error("Invalid Building");
     }
   });
-
-  // const building = await Building.create({
-  //   bd_facilities: req.body.bd_facilities,
-  //   bd_room: req.body.bd_room,
-  //   bd_address: req.body.bd_address,
-  //   bd_desc: req.body.bd_desc,
-  //   // bd_cert: cert,
-  //   bd_type: req.body.bd_type,
-  //   bd_website: req.body.bd_website,
-  //   bd_lineid: req.body.bd_lineid,
-  //   bd_phone: req.body.bd_phone,
-  //   // bd_img: img,
-  //   bd_name: req.body.bd_name,
-  //   u_id: req.body.u_id,
-  // });
-  // res.status(200).json({ data: "dog" });
-  // if (building) {
-  //   res.status(200).json({ data: building });
-  // } else {
-  //   res.status(400);
-  //   throw new Error("Invalid Building");
-  // }
-  // const building = await Building.create({
-  //   bd_facilities: req.body.bd_facilities,
-  //   bd_room: req.body.bd_room,
-  //   bd_address: req.body.bd_address,
-  //   bd_desc: req.body.bd_desc,
-  //   bd_cert: req.body.bd_cert,
-  //   bd_type: req.body.bd_type,
-  //   bd_website: req.body.bd_website,
-  //   bd_lineid: req.body.bd_lineid,
-  //   bd_phone: req.body.bd_phone,
-  //   bd_img: req.body.bd_img,
-  //   bd_name: req.body.bd_name,
-  //   u_id: req.body.u_id,
-  // });
 });
 
 // @desc Update Building
@@ -139,8 +103,25 @@ const deleteBuilding = asyncHandler(async (req, res) => {
   res.status(200).json({ id: req.params.id });
 });
 
+// @desc Get Building
+// @router GET /api/buildings/:id
+// @access private
 const getBuildingByID = asyncHandler(async (req, res) => {
   const building = await Building.findById(req.params.id);
+
+  if (!building) {
+    res.status(400);
+    throw new Error("Building not found");
+  }
+
+  res.status(200).json(building);
+});
+
+// @desc Get Building
+// @router GET /api/buildings/me
+// @access private
+const getMyBuilding = asyncHandler(async (req, res) => {
+  const building = await Building.find({ u_id: req.user.id });
 
   if (!building) {
     res.status(400);
@@ -156,4 +137,5 @@ module.exports = {
   deleteBuilding,
   getBuildingByID,
   getAllBuilding,
+  getMyBuilding,
 };
