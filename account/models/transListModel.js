@@ -7,7 +7,6 @@ const transListSchema = mongoose.Schema(
     },
     tr_contract: {
       type: String,
-      required: [true, "Please enter a text value"],
     },
     tr_state: {
       type: String,
@@ -19,17 +18,17 @@ const transListSchema = mongoose.Schema(
     },
     u_id1: {
       type: mongoose.Schema.Types.ObjectId,
-      //   required: true,
+      required: true,
       ref: "User",
     },
     u_id2: {
       type: mongoose.Schema.Types.ObjectId,
-      //   required: true,
+      required: true,
       ref: "User",
     },
     bd_id: {
       type: mongoose.Schema.Types.ObjectId,
-      //   required: true,
+      required: true,
       ref: "Building",
     },
   },
