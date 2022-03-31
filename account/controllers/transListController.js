@@ -21,10 +21,10 @@ const getMyTransList = asyncHandler(async (req, res) => {
 // @access Private
 const setTransList = asyncHandler(async (req, res) => {
   const transList = await TransList.create({
-    tr_state: req.body.tr_state,
-    tr_contract: req.body.tr_contract,
+    tr_state: req.body.tr_state ? req.body.tr_state : "",
+    tr_contract: req.body.tr_contract ? req.body.tr_contract : "",
     tr_start_date: req.body.tr_start_date,
-    tr_cancel_date: req.body.tr_cancel_date,
+    tr_cancel_date: req.body.tr_cancel_date ? req.body.tr_cancel_date : "",
     u_id1: req.body.u_id1,
     u_id2: req.body.u_id2,
     bd_id: req.body.bd_id,
@@ -72,7 +72,6 @@ const deleteTransList = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-  getTransList,
   getMyTransList,
   setTransList,
   updateTransList,
