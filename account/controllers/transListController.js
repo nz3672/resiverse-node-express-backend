@@ -72,7 +72,6 @@ const deleteTransList = asyncHandler(async (req, res) => {
 });
 
 module.exports = {
-  getTransList,
   getMyTransList,
   setTransList,
   updateTransList,

@@ -130,6 +130,15 @@ const generateToken = (id) => {
   });
 };
 
+const getOtherUserById = asyncHandler(async (req, res) => {
+  const { u_name, u_email, u_username } = await User.findById(req.params.id);
+
+  res.status(200).json({
+    u_name: u_name,
+    u_email: u_email,
+    u_username: u_username,
+  });
+});
 module.exports = {
   getUser,
   registerUser,
@@ -137,4 +146,5 @@ module.exports = {
   deleteUser,
   loginUser,
   getMe,
+  getOtherUserById,
 };

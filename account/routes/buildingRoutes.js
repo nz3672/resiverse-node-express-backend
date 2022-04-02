@@ -10,14 +10,15 @@ const {
 } = require("../controllers/buildingController");
 const { protect } = require("../middleware/authMiddleware");
 
-router
-  .route("/:id")
-  .put(protect, updateBuilding)
-  .delete(protect, deleteBuilding);
+// router
+//   .route("/:id")
+//   .put(protect, updateBuilding)
+//   .delete(protect, deleteBuilding);
 
 router.route("/post").post(protect, setBuilding);
 router.route("/").get(getAllBuilding);
 router.route("/me").get(protect, getMyBuilding);
+router.route("/get/:id").get(protect, getBuildingByID);
 
 // router.get("/", getBuilding);
 
