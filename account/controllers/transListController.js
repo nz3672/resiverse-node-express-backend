@@ -25,8 +25,11 @@ const setTransList = asyncHandler(async (req, res) => {
     tr_contract: req.body.tr_contract ? req.body.tr_contract : "",
     tr_start_date: req.body.tr_start_date,
     tr_cancel_date: req.body.tr_cancel_date ? req.body.tr_cancel_date : "",
-    u_id1: req.body.u_id1,
-    u_id2: req.body.u_id2,
+    tenant_id: req.body.tenant_id,
+    landlord_id: req.body.landlord_id,
+    room_name: req.body.room_name,
+    room_price: req.body.room_price,
+    insurance_price: req.body.insurance_price,
     bd_id: req.body.bd_id,
   });
 
