@@ -53,6 +53,9 @@ const buildingSchema = mongoose.Schema({
     type: String,
     required: [true, "Please enter a name"],
   },
+  insurance_price: {
+    type: String,
+  },
   u_id: {
     type: mongoose.Schema.Types.ObjectId,
     //   required: true,
