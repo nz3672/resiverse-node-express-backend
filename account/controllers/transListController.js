@@ -1,18 +1,29 @@
 const asyncHandler = require("express-async-handler");
-
+const { upload } = require("../controllers/imgController");
+const formidable = require("formidable");
 const TransList = require("../models/transListModel");
-
+const Building = require("../models/buildingModel");
 // @desc Get TransList
 // @router GET /api/translists
 // @access Private
 const getMyTransList = asyncHandler(async (req, res) => {
+  // const transLists = await TransList.find({
+  //   $or: [{ tenant_id: req.user.id }, { landlord_id: req.user.id }],
+  // });
   const transLists = await TransList.find({
-    $or: [{ u_id1: req.user.id }, { u_id2: req.user.id }],
-  });
+    $or: [{ tenant_id: req.user.id }, { landlord_id: req.user.id }],
+  })
+    .populate("bd_id")
+    .populate({
+      path: "tenant_id",
+      select: "u_username u_email u_name u_phonenum u_surname",
+    });
+
   if (!transLists) {
     res.status(400);
     throw new Error("No translist in this user.");
   }
+  // res.status(200).json({ room_name: room_name });
   res.status(200).json(transLists);
 });
 
@@ -40,22 +51,41 @@ const setTransList = asyncHandler(async (req, res) => {
 // @router PUT /api/translists
 // @access Private
 const updateTransList = asyncHandler(async (req, res) => {
-  const transList = await TransList.findById(req.params.id);
+  const imgs = upload.any("room_state_pic", "tr_slip_img");
 
-  if (!transList) {
-    res.status(400);
-    throw new Error("Transaction list not found");
-  }
-
-  const updatedTransList = await TransList.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true,
+  imgs(req, res, async (err) => {
+    if (req.files !== undefined) {
+      if (req.files.length !== 0) {
+        if (req.files[0].fieldname === "tr_slip_img[0]") {
+          req.body.tr_slip_img = req.files[0].location;
+        } else {
+          req.body.room_state_pic = req.files;
+        }
+      }
     }
-  );
 
-  res.status(200).json(updatedTransList);
+    const transList = await TransList.findById(req.params.id);
+
+    if (!transList) {
+      res.status(400);
+      throw new Error("Transaction list not found");
+    }
+
+    const updatedTransList = await TransList.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        new: true,
+      }
+    )
+      .populate("bd_id")
+      .populate({
+        path: "tenant_id",
+        select: "u_username u_email u_name u_phonenum u_surname",
+      });
+
+    res.status(200).json(updatedTransList);
+  });
 });
 
 // @desc Delete TransList

@@ -2,6 +2,25 @@ const mongoose = require("mongoose");
 
 const transListSchema = mongoose.Schema(
   {
+    tr_isDebate: {
+      type: Boolean,
+    },
+    tr_getBackInsurForTenant: {
+      type: String,
+    },
+    tr_debate_reason: {
+      type: String,
+    },
+    tr_insur_after_left: {
+      insuranceAfLeft: String,
+      waterUnitAfLeft: String,
+      waterAfLeft: String,
+      electUnitAfLeft: String,
+      electAfLeft: String,
+    },
+    tr_slip_img: {
+      type: String,
+    },
     tr_cancel_date: {
       type: Date,
     },
