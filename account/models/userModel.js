@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 
 const userSchema = mongoose.Schema({
+  u_profileImg: {
+    type: String,
+  },
   u_username: {
     type: String,
     required: [true, "Please enter a username"],

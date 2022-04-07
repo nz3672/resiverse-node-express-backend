@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const User = require("../models/userModel");
-const { use } = require("../routes/buildingRoutes");
+const { upload } = require("../controllers/imgController");
+const formidable = require("formidable");
 
 // @desc Get User
 // @router GET /api/users
@@ -24,56 +25,60 @@ const getMe = asyncHandler(async (req, res) => {
 // @router POST /api/users
 // @access Public
 const registerUser = asyncHandler(async (req, res) => {
-  const {
-    u_username,
-    u_email,
-    u_name,
-    u_bankactname,
-    u_password,
-    u_bankactid,
-    u_surname,
-    u_phonenum,
-    u_idcard,
-  } = req.body;
-  if (!req.body) {
-    res.status(400);
-    throw new Error("Please add a text feild");
-  }
+  const form = new formidable.IncomingForm().parse(req);
+  let userPassword = "";
 
-  // Check if User exist
-  const userExists = await User.findOne({ u_email });
-
-  if (userExists) {
-    res.status(400);
-    throw new Error("User already exist");
-  }
-
-  // Hash password
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(u_password, salt);
-
-  //Create user
-  const user = await User.create({
-    u_username,
-    u_email,
-    u_name,
-    u_bankactname,
-    u_password: hashedPassword,
-    u_bankactid,
-    u_surname,
-    u_phonenum,
-    u_idcard,
+  form.on("field", function (field, value) {
+    if (field === "u_password") {
+      userPassword = value;
+    }
   });
 
-  if (user) {
-    res.status(201).json({
-      _id: user.id,
-      token: generateToken(user._id),
+  // upload img to aws s3
+  const imgProfile = upload.any("u_profileImg");
+
+  imgProfile(req, res, async (err) => {
+    if (!req.body) {
+      res.status(400);
+      throw new Error("Please add a text field");
+    }
+
+    // Check if User exist
+    const userExists = await User.findOne({ u_email: req.body.u_email });
+
+    if (userExists) {
+      res.status(400);
+      throw new Error("User already exist");
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(userPassword, salt);
+    //Create user
+    const user = await User.create({
+      u_username: req.body.u_username,
+      u_email: req.body.u_email,
+      u_name: req.body.u_name,
+      u_bankactname: req.body.u_bankactname,
+      u_password: hashedPassword,
+      u_bankactid: req.body.u_bankactid,
+      u_surname: req.body.u_surname,
+      u_phonenum: req.body.u_phonenum,
+      u_idcard: req.body.u_idcard,
+      u_profileImg: req.files[0].location,
     });
-  } else {
-    res.status(400);
-    throw new Error("Invalid User data");
-  }
+
+    if (user) {
+      res.status(201).json({
+        _id: user.id,
+        user: user,
+        token: generateToken(user._id),
+      });
+    } else {
+      res.status(400);
+      throw new Error("Invalid User data");
+    }
+  });
 });
 
 // @desc Login User
@@ -101,19 +106,37 @@ const loginUser = asyncHandler(async (req, res) => {
 // @router PUT /api/users
 // @access Private
 const updateUser = asyncHandler(async (req, res) => {
-  const condition = { _id: req.params.id };
-  const update = req.body;
-  const { u_password } = req.body;
-
-  if (u_password !== undefined) {
-    // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(u_password, salt);
-    update.u_password = hashedPassword;
-  }
-
-  const user = await User.findOneAndUpdate(condition, update, { new: true });
-  res.status(200).json(user);
+  const form = new formidable.IncomingForm().parse(req);
+  let userPassword = "";
+  let userProfileImg = "";
+  form.on("field", function (field, value) {
+    // console.log(field, value);
+    if (field === "u_password") {
+      userPassword = value;
+    }
+  });
+  form.on("file", function (field, value) {
+    if (field === "u_profileImg") {
+      userProfileImg = value;
+    }
+  });
+  console.log(userProfileImg);
+  const imgProfile = upload.any("u_profileImg");
+  imgProfile(req, res, async (err) => {
+    if (userProfileImg) {
+      req.body.u_profileImg = req.files[0].location;
+    }
+    if (userPassword) {
+      // Hash password
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(userPassword, salt);
+      req.body.u_password = hashedPassword;
+    }
+    const user = await User.findOneAndUpdate({ _id: req.params.id }, req.body, {
+      new: true,
+    });
+    res.status(200).json(user);
+  });
 });
 
 // @desc Delete User
