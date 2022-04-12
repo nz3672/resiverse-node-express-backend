@@ -2,7 +2,13 @@ const mongoose = require("mongoose");
 
 const transListSchema = mongoose.Schema(
   {
+    room_insur_pic: {
+      type: String,
+    },
     tr_isDebate: {
+      type: Boolean,
+    },
+    tr_landlord_debate: {
       type: Boolean,
     },
     tr_getBackInsurForTenant: {
@@ -12,11 +18,24 @@ const transListSchema = mongoose.Schema(
       type: String,
     },
     tr_insur_after_left: {
-      insuranceAfLeft: String,
       waterUnitAfLeft: String,
       waterAfLeft: String,
       electUnitAfLeft: String,
       electAfLeft: String,
+    },
+    tr_insur_left_type: {
+      wood: {
+        woodCountDamage: String,
+        woodMoneyDamage: String,
+      },
+      wall: {
+        wallCountDamage: String,
+        wallMoneyDamage: String,
+      },
+      nail: {
+        nailCountDamage: String,
+        nailMoneyDamage: String,
+      },
     },
     tr_slip_img: {
       type: String,

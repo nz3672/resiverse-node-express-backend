@@ -51,13 +51,16 @@ const setTransList = asyncHandler(async (req, res) => {
 // @router PUT /api/translists
 // @access Private
 const updateTransList = asyncHandler(async (req, res) => {
-  const imgs = upload.any("room_state_pic", "tr_slip_img");
+  const imgs = upload.any("room_state_pic", "tr_slip_img", "room_insur_pic");
 
   imgs(req, res, async (err) => {
     if (req.files !== undefined) {
       if (req.files.length !== 0) {
         if (req.files[0].fieldname === "tr_slip_img[0]") {
           req.body.tr_slip_img = req.files[0].location;
+        }
+        if (req.files[0].fieldname === "room_insur_pic[0]") {
+          req.body.room_insur_pic = req.files[0].location;
         } else {
           req.body.room_state_pic = req.files;
         }

@@ -120,7 +120,7 @@ const updateUser = asyncHandler(async (req, res) => {
       userProfileImg = value;
     }
   });
-  console.log(userProfileImg);
+  // console.log(userProfileImg);
   const imgProfile = upload.any("u_profileImg");
   imgProfile(req, res, async (err) => {
     if (userProfileImg) {
