@@ -9,8 +9,8 @@ services:
     depends_on:
       - gateway
       - account-bck
-    networks:
-      - nginx_network
+    # networks:
+    #   - nginx_network
 
   gateway:
     build: ./gateway
@@ -23,8 +23,8 @@ services:
       - ./gateway/.env
     depends_on:
       - account-bck
-    networks:
-      - nginx_network
+    # networks:
+    #   - nginx_network
 
   account-bck:
     build: ./account
@@ -35,9 +35,9 @@ services:
       - /app/node_modules
     env_file:
       - ./account/.env
-    networks:
-      - nginx_network
+    # networks:
+    #   - nginx_network
 
-networks:
-  nginx_network:
-    external: true
+# networks:
+#   nginx_network:
+#     external: true
